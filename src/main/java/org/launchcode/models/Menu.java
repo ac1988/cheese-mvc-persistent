@@ -34,6 +34,8 @@ public class Menu {
         cheeses.add(item);
     }
 
+    public void removeItem(Cheese item) { cheeses.remove(item);}
+
     public String getName() {
         return name;
     }

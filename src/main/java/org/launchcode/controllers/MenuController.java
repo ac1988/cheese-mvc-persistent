@@ -84,4 +84,30 @@ public class MenuController {
         menuDao.save(theMenu);
         return "redirect:view/" + theMenu.getId();
     }
+
+    @RequestMapping(value = "remove-item/{menuId}", method = RequestMethod.GET)
+    public String removeItem(Model model, @PathVariable int menuId){
+        Menu viewMenu = menuDao.findOne(menuId);
+        AddMenuItemForm newItem = new AddMenuItemForm(viewMenu, cheeseDao.findAll());
+
+        model.addAttribute("form", newItem);
+        model.addAttribute("title", "Remove item from menu: " + viewMenu.getName());
+        return "menu/remove-item";
+    }
+
+    @RequestMapping(value = "remove-item", method = RequestMethod.POST)
+    public String processRemoveItem(@ModelAttribute @Valid AddMenuItemForm newItem,
+                                 Errors errors, Model model) {
+        if (errors.hasErrors()) {
+            return "menu/remove-item";
+        }
+
+        Menu theMenu = menuDao.findOne(newItem.getMenuId());
+        Cheese newCheese = cheeseDao.findOne(newItem.getCheeseId());
+
+        theMenu.removeItem(newCheese);
+
+        menuDao.save(theMenu);
+        return "redirect:view/" + theMenu.getId();
+    }
 }
